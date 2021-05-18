@@ -1,0 +1,121 @@
+---
+title: "Carbon uptake app"
+author: "dodo"
+date: "5/18/2021"
+output: ioslides_presentation
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Presentation on Carbon uptake app
+
+This is a peer assessed assignment that has two parts. First there was created a Shiny application and deployed on Rstudio's servers. Second, this Rstudio presentation was prepared to introduce user to application as well as to the project in general.
+
+## All documents can be acessed through github pages
+
+- this presentation
+- application code: ui and server
+- the app runs under the link https://dodo94.shinyapps.io/CO2app/
+- the github rep can be found here: 
+
+## Documentation-data base used in app
+
+The data used in the app was CO2 data available in R under the datasets package. It contains info on carbon dioxide uptake and concentrations in the plants under different treatment (chilled and nonchilled) measured at Quebec and Mississippi locations. Below you can see the first 5 rows of data.
+
+```{r cars, echo = TRUE}
+library(datasets)
+CO2<-datasets::CO2
+head(CO2,5)
+```
+
+## The app looks like that
+
+```{r include=FALSE}
+library(shiny)
+library(tidyverse)
+library(datasets)
+library(ggplot2)
+library(dplyr)
+```
+
+```{r}
+
+CO2 <- datasets::CO2
+ui <- fluidPage(
+    titlePanel("CO2 uptake and concentration in plants"),
+    sidebarLayout(
+        sidebarPanel(
+            sliderInput(inputId = "conc",
+                        label = "conc mL/L",
+                        min = 95,
+                        max = max(CO2$conc, na.rm = TRUE),
+                        value = c(95, max(CO2$conc, na.rm = TRUE)),
+                        pre = "mL/L"),
+            radioButtons(inputId = "Treatment",
+                         label = "treatment type",
+                         choices = c("chilled","nonchilled")),
+         
+            radioButtons(inputId = "Type",
+                         label = "Location",
+                         choices = c("Quebec","Mississippi"))
+        ), 
+        mainPanel(
+            
+            tabsetPanel(type="tabs",
+                        tabPanel("Use the app",br(),
+                                 
+            plotOutput("CO2Plot")),
+            
+            tabPanel("App data",br(),
+                     textOutput("description"))
+                  
+        
+    )
+)))
+
+
+
+server<-function(input, output) {
+d <- reactive({
+    CO2 %>% filter(Type == input$Type,
+                   Treatment == input$Treatment)
+})
+
+# linear reg model
+mod1 <- reactive({
+    lm(uptake ~ conc, data=d())
+})
+# and its prediction
+linpred1 <- reactive({
+    predict(mod1(), data.frame(conc=input$conc))
+})
+
+output$CO2Plot <- renderPlot({
+    
+    carbon <- ggplot(d(), aes(x=conc, y=uptake)) + geom_point() + 
+            xlab("CO2 concentration (mL/L)") +
+            ylab("CO2 uptake (umol/m^2 sec)") + geom_smooth(method = "lm", formula = y ~ x, color = "black") +
+            geom_point(data=data.frame(conc=input$conc, uptake=linpred1()),
+                       color="black", size=4)
+    
+
+carbon
+
+
+})
+
+output$description<-renderText({
+    "This app uses the CO2 data base which can be found under datasets package
+     in R. In the database you can find carbon dioxide uptake, concentrations of the 
+     plants found in Mississippi and Quebec. 
+     The plants were either chilled or nonchilled during harvest
+     process in various carbon dioxide concentrations "
+})
+}
+shinyApp(ui = ui, server = server)
+
+```
+

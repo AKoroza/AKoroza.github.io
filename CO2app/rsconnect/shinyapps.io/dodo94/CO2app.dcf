@@ -1,0 +1,12 @@
+name: CO2app
+title: CO2app
+username:
+account: dodo94
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 4149877
+bundleId: 4612930
+url: https://dodo94.shinyapps.io/CO2app/
+when: 1621367645.00878
+asMultiple: FALSE
+asStatic: FALSE
