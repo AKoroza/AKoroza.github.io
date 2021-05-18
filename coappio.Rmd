@@ -19,7 +19,7 @@ This is a peer assessed assignment that has two parts. First there was created a
 - this presentation
 - application code: ui and server
 - the app runs under the link https://dodo94.shinyapps.io/CO2app/
-- the github rep can be found here: 
+- the github rep can be found here: https://github.com/AKoroza/CO2-app
 
 ## Documentation-data base used in app
 
