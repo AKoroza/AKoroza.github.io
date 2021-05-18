@@ -5,3 +5,5 @@ This is a peer assessed assignment that has two parts. First there was created a
 In this repository there are provided server, ui to deploy the app like this: https://dodo94.shinyapps.io/CO2app/ in CO2 app file.
 
 There is also provided a code for a R presentation explaining the app
+
+presentation of the app is available on Rpubs: https://rpubs.com/Dodo_2/771239
